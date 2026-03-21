@@ -1,0 +1,36 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[System.Serializable]
+public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver             //自定义可序列化字典
+{
+    [SerializeField] private List<TKey> keys = new List<TKey>();
+    [SerializeField] private List<TValue> values = new List<TValue>();  
+
+    public void OnBeforeSerialize()               //序列化前
+    {
+        keys.Clear();
+        values.Clear();
+
+        foreach(KeyValuePair<TKey, TValue> pair in this)
+        {
+            keys.Add(pair.Key);
+            values.Add(pair.Value);
+        }
+    }
+
+    public void OnAfterDeserialize()                        //反序列化后
+    {
+        this.Clear();
+        
+        if (keys.Count != values.Count)
+            Debug.Log("Keys count is not equal to values count");
+
+        for (int i = 0; i < keys.Count ; i++)
+        {
+            this.Add(keys[i], values[i]);
+        }
+    }
+
+}

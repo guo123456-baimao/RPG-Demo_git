@@ -1,0 +1,37 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SlimeIdleState : SlimeGroundedState
+{
+    public SlimeIdleState(Enemy _enemyBase, EnemyStateMachine _stateMachine, string _animBoolName, Enemy_Slime enemy) : base(_enemyBase, _stateMachine, _animBoolName, enemy)
+    {
+
+    }
+
+    public override void Enter()
+    {
+        base.Enter();
+        stateTimer = enemy.idleTime;
+    }
+
+    public override void Exit()
+    {
+        base.Exit();
+        //AudioManager.instance.PlaySFX(24, enemy.transform);
+    }
+
+    public override void Update()
+    {
+        base.Update();
+        if (Vector2.Distance(enemy.transform.position, player.position) < enemy.battleDistance)
+        {
+            stateMachine.ChangeState(enemy.battleState);
+            return; // ÖÕÖ¹ºóÐøIdle¡úMoveµÄÂß¼­
+        }
+        if (stateTimer < 0)
+        {
+            stateMachine.ChangeState(enemy.moveState);
+        }
+    }
+}
